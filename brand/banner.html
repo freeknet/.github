@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>freeknet banner</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --ink: #0B0D0E; --text: #E8EAE6; --dim: #8A9288; --accent: #B8F84A; }
+  html, body { margin: 0; background: var(--ink); }
+  .banner {
+    width: 1200px; height: 300px; box-sizing: border-box; padding: 0 72px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'JetBrains Mono', monospace; color: var(--text);
+  }
+  .lines { display: flex; flex-direction: column; gap: 14px; font-size: 26px; line-height: 1.3; }
+  .dim { color: var(--dim); }
+  .accent { color: var(--accent); font-weight: 700; }
+  .cursor { display: inline-block; width: 15px; height: 28px; background: var(--accent); vertical-align: -5px; }
+  .mark { width: 200px; height: 200px; }
+</style>
+</head>
+<body>
+<div class="banner">
+  <div class="lines">
+    <div><span class="dim">$</span> freeknet --about</div>
+    <div class="accent">sharp, opinionated developer tools.</div>
+    <div class="dim">free and open source. small tools, good defaults.</div>
+    <div><span class="dim">$</span> <span class="cursor"></span></div>
+  </div>
+  <svg class="mark" viewBox="0 0 512 512" aria-hidden="true">
+    <polyline points="142,166 246,256 142,346" fill="none" stroke="#B8F84A" stroke-width="50" stroke-linecap="square"/>
+    <rect x="282" y="318" width="112" height="48" fill="#B8F84A"/>
+  </svg>
+</div>
+</body>
+</html>

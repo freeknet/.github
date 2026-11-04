@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>freeknet social preview</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --ink: #0B0D0E; --text: #E8EAE6; --dim: #8A9288; --accent: #B8F84A; --project: #B8F84A; }
+  html, body { margin: 0; background: var(--ink); }
+  .card {
+    width: 1280px; height: 640px; box-sizing: border-box; padding: 72px 88px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace; color: var(--text);
+  }
+  .top { display: flex; align-items: center; gap: 18px; font-size: 26px; color: var(--dim); }
+  .top svg { width: 56px; height: 56px; }
+  .name { font-size: 92px; font-weight: 800; letter-spacing: -3px; color: var(--project); line-height: 1.05; }
+  .name .prompt { color: var(--dim); font-weight: 400; }
+  .desc { margin-top: 28px; font-size: 32px; line-height: 1.4; max-width: 1040px; }
+  .bottom { display: flex; align-items: center; gap: 14px; font-size: 24px; color: var(--dim); }
+  .cursor { display: inline-block; width: 14px; height: 28px; background: var(--accent); }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="top">
+    <svg viewBox="0 0 512 512" aria-hidden="true">
+      <rect width="512" height="512" rx="72" fill="#151819"/>
+      <polyline points="142,166 246,256 142,346" fill="none" stroke="#B8F84A" stroke-width="50" stroke-linecap="square"/>
+      <rect x="282" y="318" width="112" height="48" fill="#B8F84A"/>
+    </svg>
+    <span>freeknet</span>
+  </div>
+  <div>
+    <div class="name"><span class="prompt">$ </span><span id="repo"></span></div>
+    <div class="desc" id="desc"></div>
+  </div>
+  <div class="bottom"><span id="url"></span><span class="cursor"></span></div>
+</div>
+<script>
+  const p = new URLSearchParams(location.search);
+  const repo = p.get("repo") ?? "repo";
+  document.getElementById("repo").textContent = repo;
+  document.getElementById("desc").textContent = p.get("desc") ?? "";
+  document.getElementById("url").textContent = `github.com/freeknet/${repo}`;
+  if (p.get("color")) document.documentElement.style.setProperty("--project", p.get("color"));
+  // Shrink long repo names until they fit on one line.
+  const name = document.querySelector(".name");
+  name.style.whiteSpace = "nowrap";
+  for (let size = 92; name.scrollWidth > 1104 && size > 40; size -= 4) name.style.fontSize = `${size}px`;
+</script>
+</body>
+</html>

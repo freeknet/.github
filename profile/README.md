@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="https://raw.githubusercontent.com/freeknet/.github/main/brand/banner.png" alt="$ freeknet --about: sharp, opinionated developer tools." width="100%">
+
 # freeknet
 
 **Sharp, opinionated developer tools. Free and open source.**
