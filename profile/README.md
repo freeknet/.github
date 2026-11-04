@@ -1,0 +1,36 @@
+<div align="center">
+
+# freeknet
+
+**Sharp, opinionated developer tools. Free and open source.**
+
+Small tools that do one job well, ship with sensible defaults, and stay out of your way.
+
+</div>
+
+---
+
+## Projects
+
+| Project | What it does | Stack |
+| --- | --- | --- |
+| [**create-rust-app**](https://github.com/freeknet/create-rust-app) | Scaffold Rust projects (CLI, GUI, TUI, library or workspace) with strict lints, CI and release automation already wired up, in a very colourful terminal. | Node · Rust |
+
+More tools are on the way. Watch this org to see them when they land.
+
+## What we care about
+
+- **Good defaults.** A tool should do the right thing before you configure anything.
+- **Strict by default.** Lints, CI and release automation come set up from day one, so you don't bolt them on later.
+- **Nice to use.** Clear output, helpful errors, and a terminal that's pleasant to look at.
+- **Open.** MIT licensed unless a project says otherwise.
+
+## Get involved
+
+- Found a bug or have an idea? Open an issue on the project's repo.
+- Pull requests are welcome. For anything large, start with an issue so we can talk it through.
+- If a tool saves you time, a ⭐ helps other people find it.
+
+<div align="center">
+<sub>Made by <a href="https://github.com/lnorton89">@lnorton89</a></sub>
+</div>
