@@ -30,7 +30,3 @@ More tools are on the way. Watch this org to see them when they land.
 - Found a bug or have an idea? Open an issue on the project's repo.
 - Pull requests are welcome. For anything large, start with an issue so we can talk it through.
 - If a tool saves you time, a ⭐ helps other people find it.
-
-<div align="center">
-<sub>Made by <a href="https://github.com/lnorton89">@lnorton89</a></sub>
-</div>
