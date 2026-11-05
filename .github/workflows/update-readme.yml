@@ -8,6 +8,8 @@ on:
     branches: [main]
     paths:
       - scripts/update-readme.mjs
+      - scripts/render-brand.mjs
+      - brand/social.html
       - .github/workflows/update-readme.yml
 
 permissions:
@@ -33,14 +35,21 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ORG: ${{ github.repository_owner }}
 
+      - name: Render social images for new repos
+        run: node scripts/render-brand.mjs --new-only
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ORG: ${{ github.repository_owner }}
+
       - name: Commit if changed
         run: |
-          if git diff --quiet -- profile/README.md; then
+          # --porcelain rather than git diff, which can't see a newly rendered image.
+          if [ -z "$(git status --porcelain -- profile/README.md brand/social)" ]; then
             echo "No changes."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898299+github-actions[bot]@users.noreply.github.com"
-          git add profile/README.md
-          git commit -m "Update profile README project list"
+          git add profile/README.md brand/social
+          git commit -m "Update profile README and social images"
           git push
