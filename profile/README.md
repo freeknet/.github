@@ -22,6 +22,7 @@ Small tools that do one job well, ship with sensible defaults, and stay out of y
 | [**rustaman**](https://github.com/freeknet/rustaman) | A better task manager, written in Rust. | Rust |
 | [**metaplate**](https://github.com/freeknet/metaplate) | Composable, framework-neutral Open Graph image tooling for TypeScript. | Node · TypeScript |
 | [**create-rust-app**](https://github.com/freeknet/create-rust-app) | Scaffold Rust projects (CLI, GUI, TUI, lib, workspace) with strict lints, CI and release automation, in a very colourful terminal. | Node · Rust · TypeScript |
+| [**next-site-template**](https://github.com/freeknet/next-site-template) | Static-export Next.js 16 site template. | Node · TypeScript |
 <!-- PROJECTS:END -->
 
 More tools are on the way. Watch this org to see them when they land.
