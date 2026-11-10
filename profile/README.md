@@ -18,6 +18,7 @@ Small tools that do one job well, ship with sensible defaults, and stay out of y
 | Project | What it does | Stack |
 | --- | --- | --- |
 | [**juce-plugin-example**](https://github.com/freeknet/juce-plugin-example) | A production-minded example project showing how to build a Windows spectrum-analyzer audio product with JUCE 8. | C++ · CMake · TypeScript |
+| [**cinnabar**](https://github.com/freeknet/cinnabar) | Probably better than Rust. | C · Rust · TypeScript |
 | [**rustdirstat**](https://github.com/freeknet/rustdirstat) | A cross-platform WinDirStat clone written in Rust, with both a native desktop GUI and a terminal UI. | Nix · Rust |
 | [**rustaman**](https://github.com/freeknet/rustaman) | A better task manager, written in Rust. | Rust |
 | [**metaplate**](https://github.com/freeknet/metaplate) | Composable, framework-neutral Open Graph image tooling for TypeScript. | Node · TypeScript |
