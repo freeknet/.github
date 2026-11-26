@@ -3,13 +3,11 @@
 // Env: ORG (default "freeknet"), README (default "profile/README.md").
 //
 // Each block sits between <!-- GEN:<name>:START --> and <!-- GEN:<name>:END --> markers:
-//   stats    - counts and language badges under the header
-//   projects - the org's own repos as cards, grouped by category (scripts/readme.config.json)
+//   stats    - project, fork and star counts and the main languages, under the header
+//   projects - the org's own repos as tables, grouped by category (scripts/readme.config.json)
 //   forks    - forked repos with their upstream and how far ahead of it they are
 // Everything outside the markers is hand-written and left alone.
 
-import { createHash } from "node:crypto";
-import { existsSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
@@ -17,18 +15,8 @@ const ORG = process.env.ORG ?? "freeknet";
 const README = process.env.README ?? "profile/README.md";
 const TOKEN = process.env.GITHUB_TOKEN;
 const CONFIG = JSON.parse(await readFile(resolve("scripts/readme.config.json"), "utf8"));
-const RAW = `https://raw.githubusercontent.com/${ORG}/.github/main`;
-
-// Brand colours, matching brand/banner.html.
-const ACCENT = "B8F84A";
-const SURFACE = "151819";
 
 const SKIP = new Set(CONFIG.skip ?? []);
-
-// What each social card was rendered from (written by scripts/render-brand.mjs).
-const SOCIAL_MANIFEST = existsSync(resolve("brand/social/manifest.json"))
-  ? JSON.parse(await readFile(resolve("brand/social/manifest.json"), "utf8"))
-  : {};
 
 // Friendlier names for the stack line. null hides a language. Anything not listed is shown as-is.
 const LANGUAGE_NAMES = {
@@ -42,19 +30,6 @@ const LANGUAGE_NAMES = {
   CSS: null,
 };
 const MAX_LANGUAGES = 3;
-
-// simpleicons.org slugs for the language badges. Languages without one get a plain badge.
-const LANGUAGE_LOGOS = {
-  Rust: "rust",
-  TypeScript: "typescript",
-  JavaScript: "javascript",
-  "C++": "cplusplus",
-  C: "c",
-  Nix: "nixos",
-  Python: "python",
-  Go: "go",
-  Zig: "zig",
-};
 
 async function gh(path, { allow404 = false } = {}) {
   const res = await fetch(`https://api.github.com${path}`, {
@@ -98,20 +73,6 @@ function compact(n) {
   if (n < 1000) return String(n);
   const k = n / 1000;
   return `${k >= 100 ? Math.round(k) : k.toFixed(1).replace(/\.0$/, "")}k`;
-}
-
-// shields.io static badge path segment: dashes and underscores are doubled, the rest URL-encoded.
-const shield = (text) => encodeURIComponent(String(text).replace(/-/g, "--").replace(/_/g, "__"));
-
-function badge({ label, message, color = ACCENT, logo, href, alt }) {
-  const path = label ? `${shield(label)}-${shield(message)}-${color}` : `${shield(message)}-${color}`;
-  const query = new URLSearchParams({ style: "flat-square", labelColor: SURFACE });
-  if (logo) {
-    query.set("logo", logo);
-    query.set("logoColor", ACCENT);
-  }
-  const img = `<img src="https://img.shields.io/badge/${path}?${query}" alt="${escapeHtml(alt ?? `${label ?? ""} ${message}`.trim())}">`;
-  return href ? `<a href="${href}">${img}</a>` : img;
 }
 
 // ---------- data ----------
@@ -158,6 +119,11 @@ function categoryFor(repo) {
 
 // ---------- blocks ----------
 
+function joinList(items) {
+  if (items.length <= 1) return items.join("");
+  return `${items.slice(0, -1).join(", ")} and ${items.at(-1)}`;
+}
+
 function renderStats(projects, forks) {
   const stars = projects.reduce((sum, r) => sum + r.stargazers_count, 0);
   const orgUrl = `https://github.com/orgs/${ORG}/repositories`;
@@ -167,55 +133,28 @@ function renderStats(projects, forks) {
   for (const r of projects) if (r.language) counts.set(r.language, (counts.get(r.language) ?? 0) + 1);
   const languages = [...counts].sort(([a, x], [b, y]) => y - x || a.localeCompare(b)).map(([l]) => l);
 
-  const totals = [
-    badge({ label: "projects", message: projects.length, href: `${orgUrl}?type=source` }),
-    forks.length ? badge({ label: "forks", message: forks.length, href: `${orgUrl}?type=fork` }) : null,
-    stars ? badge({ label: "stars", message: compact(stars), href: orgUrl }) : null,
+  const parts = [
+    `<a href="${orgUrl}?type=source"><b>${projects.length}</b> projects</a>`,
+    forks.length ? `<a href="${orgUrl}?type=fork"><b>${forks.length}</b> forks</a>` : null,
+    stars ? `<b>${compact(stars)}</b> stars` : null,
+    languages.length ? `written in ${joinList(languages.map(escapeHtml))}` : null,
   ].filter(Boolean);
-
-  const langBadges = languages.map((lang) =>
-    badge({
-      message: lang,
-      color: SURFACE,
-      logo: LANGUAGE_LOGOS[lang],
-      href: `${orgUrl}?language=${encodeURIComponent(lang.toLowerCase())}`,
-      alt: lang,
-    }),
-  );
-
-  return [`<p>\n${totals.join("\n")}\n</p>`, langBadges.length ? `<p>\n${langBadges.join("\n")}\n</p>` : null]
-    .filter(Boolean)
-    .join("\n");
+  return `<p>${parts.join(" &nbsp;·&nbsp; ")}</p>`;
 }
 
-function socialImage(repo) {
-  // Rendered by scripts/render-brand.mjs; the workflow runs it before this script.
-  if (!existsSync(resolve("brand/social", `${repo.name}.png`))) {
-    return `https://opengraph.githubassets.com/1/${ORG}/${repo.name}`;
-  }
-  // GitHub's image proxy caches by URL, so change the URL whenever the card is re-rendered.
-  const inputs = JSON.stringify(SOCIAL_MANIFEST[repo.name] ?? null);
-  const version = createHash("sha256").update(inputs).digest("hex").slice(0, 8);
-  return `${RAW}/brand/social/${repo.name}.png?v=${version}`;
-}
-
-function renderCard(repo) {
-  const desc = repo.description ? ensureSentence(repo.description) : "No description yet.";
-  const meta = [
-    `<b><a href="${repo.html_url}">${escapeHtml(repo.name)}</a></b>`,
-    repo.stack.length ? escapeHtml(repo.stack.join(" · ")) : null,
-    repo.license?.spdx_id && repo.license.spdx_id !== "NOASSERTION" ? escapeHtml(repo.license.spdx_id) : null,
-    repo.stargazers_count ? `★ ${compact(repo.stargazers_count)}` : null,
+function renderProjectRow(repo) {
+  const facts = [
     repo.release ? `<a href="${repo.release.html_url}">${escapeHtml(repo.release.tag_name)}</a>` : null,
-    repo.homepage ? `<a href="${escapeHtml(repo.homepage)}">site</a>` : null,
+    repo.stargazers_count ? `★ ${compact(repo.stargazers_count)}` : null,
   ].filter(Boolean);
-  return [
-    `<td width="50%" valign="top">`,
-    `<a href="${repo.html_url}"><img src="${socialImage(repo)}" alt="${escapeHtml(`${repo.name}: ${desc}`)}" width="100%"></a>`,
-    `<br>`,
-    `<sub>${meta.join(" &nbsp;·&nbsp; ")}</sub>`,
-    `</td>`,
-  ].join("\n");
+  const name = `[**${cell(repo.name)}**](${repo.html_url})${facts.length ? `<br><sub>${facts.join(" · ")}</sub>` : ""}`;
+
+  const desc = repo.description ? cell(ensureSentence(repo.description)) : "_No description yet._";
+  const site = repo.homepage ? ` [Website](${repo.homepage})` : "";
+  const stack = repo.stack.length ? cell(repo.stack.join(" · ")) : "—";
+  const spdx = repo.license?.spdx_id;
+  const license = spdx && spdx !== "NOASSERTION" ? `<br><sub>${cell(spdx)}</sub>` : "";
+  return `| ${name} | ${desc}${site} | ${stack}${license} |`;
 }
 
 function renderProjects(projects) {
@@ -227,16 +166,15 @@ function renderProjects(projects) {
   for (const category of order) {
     const repos = groups.get(category.title);
     if (!repos.length) continue;
-    const rows = [];
-    for (let i = 0; i < repos.length; i += 2) {
-      const pair = repos.slice(i, i + 2).map(renderCard);
-      if (pair.length === 1) pair.push(`<td width="50%"></td>`);
-      rows.push(`<tr>\n${pair.join("\n")}\n</tr>`);
-    }
     sections.push(
-      [`### ${category.title}`, "", category.blurb, "", `<table>\n${rows.join("\n")}\n</table>`]
-        .filter((line) => line !== undefined)
-        .join("\n"),
+      [
+        `### ${category.title}`,
+        "",
+        ...(category.blurb ? [category.blurb, ""] : []),
+        "| Project | What it does | Stack |",
+        "| --- | --- | --- |",
+        ...repos.map(renderProjectRow),
+      ].join("\n"),
     );
   }
   return sections.join("\n\n");
