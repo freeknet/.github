@@ -8,6 +8,7 @@ on:
     branches: [main]
     paths:
       - scripts/update-readme.mjs
+      - scripts/readme.config.json
       - scripts/render-brand.mjs
       - brand/social.html
       - .github/workflows/update-readme.yml
@@ -29,14 +30,15 @@ jobs:
         with:
           node-version: 22
 
-      - name: Regenerate Projects table
-        run: node scripts/update-readme.mjs
+      # Social images first, so the README can point at any newly rendered card.
+      - name: Render new or changed social images
+        run: node scripts/render-brand.mjs --changed
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ORG: ${{ github.repository_owner }}
 
-      - name: Render social images for new repos
-        run: node scripts/render-brand.mjs --new-only
+      - name: Regenerate README blocks
+        run: node scripts/update-readme.mjs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ORG: ${{ github.repository_owner }}

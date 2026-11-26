@@ -2,20 +2,25 @@
 // Usage: node scripts/render-brand.mjs   (set CHROME=/path/to/chrome if it isn't found)
 // Output: brand/avatar.png, brand/banner.png, brand/social/<repo>.png
 //
-// --new-only renders just the social images that don't exist yet, leaving every committed
-// PNG alone. The workflow uses it, because the same page rasterises differently on Linux
-// and Windows, so a full re-render would rewrite every image on each run.
+// --changed renders only the social images whose inputs (description, colour) differ from
+// brand/social/manifest.json, or that don't exist yet, and leaves every other committed PNG
+// alone. The workflow uses it, because the same page rasterises differently on Linux and
+// Windows, so a full re-render would rewrite every image on each run. (--new-only is an
+// older name for the same thing.)
+//
+// The manifest also remembers each repo's accent colour, so a card keeps its colour when
+// it is re-rendered or when other repos are added.
 
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdirSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
 const ORG = process.env.ORG ?? "freeknet";
 const TOKEN = process.env.GITHUB_TOKEN;
-const NEW_ONLY = process.argv.includes("--new-only");
+const CHANGED_ONLY = process.argv.includes("--changed") || process.argv.includes("--new-only");
 const SKIP = new Set([".github"]);
-// Project accent colours. Known repos keep theirs; new repos cycle through the rest.
+// Accent colours for repos the manifest doesn't know yet. New repos cycle through COLOURS.
 const PINNED = {
   "create-rust-app": "#FF8A65",
   rustaman: "#6FD3FF",
@@ -56,7 +61,7 @@ function shoot(url, out, width, height, scale) {
 
 const fileUrl = (name) => pathToFileURL(resolve(brand, name)).href;
 
-if (!NEW_ONLY) {
+if (!CHANGED_ONLY) {
   shoot(fileUrl("avatar.svg"), resolve(brand, "avatar.png"), 512, 512, 1);
   shoot(fileUrl("banner.html"), resolve(brand, "banner.png"), 1200, 300, 2);
 }
@@ -69,15 +74,26 @@ const res = await fetch(`https://api.github.com/orgs/${ORG}/repos?type=public&pe
 });
 if (!res.ok) throw new Error(`listing repos failed: ${res.status}`);
 const repos = (await res.json())
-  .filter((r) => !r.archived && !r.fork && !SKIP.has(r.name))
+  .filter((r) => !r.private && !r.archived && !r.fork && !SKIP.has(r.name))
   .sort((a, b) => a.created_at.localeCompare(b.created_at));
 
-mkdirSync(resolve(brand, "social"), { recursive: true });
-let next = 0;
-repos.forEach((r) => {
-  const color = PINNED[r.name] ?? COLOURS[next++ % COLOURS.length];
-  const out = resolve(brand, "social", `${r.name}.png`);
-  if (NEW_ONLY && existsSync(out)) return;
-  const q = new URLSearchParams({ repo: r.name, desc: r.description ?? "", color });
+const social = resolve(brand, "social");
+const manifestPath = resolve(social, "manifest.json");
+mkdirSync(social, { recursive: true });
+const previous = existsSync(manifestPath) ? JSON.parse(readFileSync(manifestPath, "utf8")) : {};
+
+const manifest = {};
+let next = Object.values(previous).filter((e) => COLOURS.includes(e.color)).length;
+for (const r of repos) {
+  const desc = r.description ?? "";
+  const color = previous[r.name]?.color ?? PINNED[r.name] ?? COLOURS[next++ % COLOURS.length];
+  manifest[r.name] = { color, desc };
+
+  const out = resolve(social, `${r.name}.png`);
+  const unchanged = existsSync(out) && previous[r.name]?.desc === desc && previous[r.name]?.color === color;
+  if (CHANGED_ONLY && unchanged) continue;
+  const q = new URLSearchParams({ repo: r.name, desc, color });
   shoot(`${fileUrl("social.html")}?${q}`, out, 1280, 640, 1);
-});
+}
+
+writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);

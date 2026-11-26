@@ -1,0 +1,42 @@
+{
+  "juce-plugin-example": {
+    "color": "#FFD84A",
+    "desc": "LumaScope: a production-minded JUCE 8 spectrum analyzer for Windows, shipped as a VST3 plug-in and standalone app."
+  },
+  "cinnabar": {
+    "color": "#FF8AC8",
+    "desc": "A zero-trust systems language with linear types, compiled to native code through LLVM. Probably better than Rust."
+  },
+  "rustdirstat": {
+    "color": "#5CF2C8",
+    "desc": "A cross-platform WinDirStat clone written in Rust, with both a native desktop GUI and a terminal UI."
+  },
+  "rustaman": {
+    "color": "#6FD3FF",
+    "desc": "A modern, responsive Windows task manager written in Rust."
+  },
+  "metaplate": {
+    "color": "#D7A6FF",
+    "desc": "Composable, framework-neutral Open Graph image tooling for TypeScript"
+  },
+  "create-rust-app": {
+    "color": "#FF8A65",
+    "desc": "Scaffold Rust projects (CLI, GUI, TUI, lib, workspace) with strict lints, CI and release automation, in a very colourful terminal."
+  },
+  "next-site-template": {
+    "color": "#FF8AC8",
+    "desc": "Statically exported Next.js 16 site template: contrast-checked light and dark palette, markdown content and build-time social cards."
+  },
+  "agentic-inbox": {
+    "color": "#FF8AC8",
+    "desc": "Single-user webmail on Cloudflare Workers: Resend delivery, Durable Object storage, an AI drafting agent, an MCP server and an installable PWA."
+  },
+  "aivideoeditor": {
+    "color": "#FF8AC8",
+    "desc": "AI video editor: index footage, plan beat-synced edits, render and export timelines"
+  },
+  "agentic-drive": {
+    "color": "#B8F84A",
+    "desc": "Personal cloud drive on Cloudflare Workers and R2: folders, resumable uploads, share links, Mail integration and an installable PWA."
+  }
+}

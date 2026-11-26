@@ -1,0 +1,31 @@
+{
+  "skip": [".github"],
+  "categories": [
+    {
+      "title": "Desktop apps",
+      "blurb": "Native apps and plug-ins, mostly written in Rust.",
+      "topics": ["desktop-app", "gui", "tui", "audio-plugin", "vst3", "video-editing"]
+    },
+    {
+      "title": "Languages & systems",
+      "blurb": "Compilers and the low-level pieces underneath everything else.",
+      "topics": ["compiler", "programming-language", "operating-system", "kernel", "llvm"]
+    },
+    {
+      "title": "Self-hosted on Cloudflare",
+      "blurb": "Personal apps you deploy to your own Cloudflare account.",
+      "topics": ["cloudflare-workers", "cloudflare-r2", "durable-objects"]
+    },
+    {
+      "title": "Developer tooling",
+      "blurb": "Scaffolds, templates and libraries for starting projects right.",
+      "topics": ["scaffolding", "code-generator", "project-template", "template", "og-image", "open-graph"]
+    }
+  ],
+  "fallbackCategory": {
+    "title": "More",
+    "blurb": "Everything else."
+  },
+  "categoryOverrides": {},
+  "forkNotes": {}
+}
