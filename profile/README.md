@@ -26,7 +26,7 @@ Native apps and plug-ins, mostly written in Rust.
 | [**aivideoeditor**](https://github.com/freeknet/aivideoeditor)<br><sub><a href="https://github.com/freeknet/aivideoeditor/releases/tag/v0.1.0">v0.1.0</a></sub> | AI video editor: index footage, plan beat-synced edits, render and export timelines. | Rust<br><sub>MIT</sub> |
 | [**rustaman**](https://github.com/freeknet/rustaman)<br><sub><a href="https://github.com/freeknet/rustaman/releases/tag/v0.2.0">v0.2.0</a> · ★ 1</sub> | A modern, responsive Windows task manager written in Rust. | Rust<br><sub>MIT</sub> |
 | [**rustdirstat**](https://github.com/freeknet/rustdirstat)<br><sub><a href="https://github.com/freeknet/rustdirstat/releases/tag/v0.2.2">v0.2.2</a> · ★ 1</sub> | A cross-platform WinDirStat clone written in Rust, with both a native desktop GUI and a terminal UI. | Rust · Nix<br><sub>MIT</sub> |
-| [**juce-plugin-example**](https://github.com/freeknet/juce-plugin-example) | LumaScope: a production-minded JUCE 8 spectrum analyzer for Windows, shipped as a VST3 plug-in and standalone app. | C++ · CMake · TypeScript<br><sub>GPL-3.0</sub> |
+| [**juce-plugin-example**](https://github.com/freeknet/juce-plugin-example) | LumaScope: a production-minded JUCE 8 spectrum analyzer for Windows, shipped as a VST3 plug-in and standalone app. | C++ · TypeScript · CMake<br><sub>GPL-3.0</sub> |
 
 ### Languages & systems
 
@@ -34,7 +34,7 @@ Compilers and the low-level pieces underneath everything else.
 
 | Project | What it does | Stack |
 | --- | --- | --- |
-| [**cinnabar**](https://github.com/freeknet/cinnabar) | A zero-trust systems language with linear types, compiled to native code through LLVM. Probably better than Rust. | Rust · C · TypeScript<br><sub>Apache-2.0</sub> |
+| [**cinnabar**](https://github.com/freeknet/cinnabar) | A zero-trust systems language with linear types, compiled to native code through LLVM. Probably better than Rust. | Rust · TypeScript · C<br><sub>Apache-2.0</sub> |
 
 ### Self-hosted on Cloudflare
 
