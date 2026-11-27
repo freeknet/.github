@@ -42,7 +42,7 @@ Personal apps you deploy to your own Cloudflare account.
 
 | Project | What it does | Stack |
 | --- | --- | --- |
-| [**agentic-drive**](https://github.com/freeknet/agentic-drive) | Personal cloud drive on Cloudflare Workers and R2: folders, resumable uploads, share links, Mail integration and an installable PWA. | TypeScript |
+| [**agentic-drive**](https://github.com/freeknet/agentic-drive) | Personal cloud drive on Cloudflare Workers and R2: folders, resumable uploads, share links, Mail integration and an installable PWA. | TypeScript · Node |
 | [**agentic-inbox**](https://github.com/freeknet/agentic-inbox) | Single-user webmail on Cloudflare Workers: Resend delivery, Durable Object storage, an AI drafting agent, an MCP server and an installable PWA. | TypeScript · Node<br><sub>Apache-2.0</sub> |
 
 ### Developer tooling
