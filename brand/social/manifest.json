@@ -38,5 +38,9 @@
   "agentic-drive": {
     "color": "#B8F84A",
     "desc": "Personal cloud drive on Cloudflare Workers and R2: folders, resumable uploads, share links, Mail integration and an installable PWA."
+  },
+  "claudemon": {
+    "color": "#B8F84A",
+    "desc": "Terminal monitor for which Claude Code sessions are burning tokens"
   }
 }
